@@ -38,7 +38,7 @@ const Home = () => {
       showAlert(true, "success", "item added to the list");
       const newItem = { id: new Date().getDate().toString(), title: task };
       setList([...list, newItem]);
-      setTask('');
+      setTask("");
     }
   };
 
@@ -49,6 +49,23 @@ const Home = () => {
   useEffect(() => {
     localStorage.setItem("list", JSON.stringify(list));
   }, [list]);
+
+  const clearItem = () => {
+    showAlert(true, "danger", "empty set");
+    setList([]);
+  };
+
+  const removeItem = (id) => {
+    showAlert(true, "danger", "item removeds");
+    setList(list.filter((item) => item.id !== id));
+  };
+
+  const editItem = (id) => {
+    const specificItem = list.find((item) => item.id === id);
+    setTask(specificItem.title);
+    seteditId(id);
+    setisEditing(true);
+  };
 
   return (
     <section className="section-center">
@@ -63,7 +80,7 @@ const Home = () => {
             onChange={(e) => setTask(e.target.value)}
           ></input>
           <button type="submit" className="submit-btn">
-            Submit
+            {isEditing ? "edit" : "submit"}
           </button>
         </div>
       </form>
