@@ -1,7 +1,5 @@
-//This is th Home.js file
-
 import React, { useEffect, useState } from "react";
-import List from "../List/List";
+import List from "./../List/List";
 import Alert from "../Alert/Alert";
 
 const getLocalStorage = () => {
@@ -16,9 +14,9 @@ const getLocalStorage = () => {
 const Home = () => {
   const [task, setTask] = useState("");
   const [list, setList] = useState(getLocalStorage());
-  const [alert, setAltert] = useState(false);
-  const [editId, seteditId] = useState(null);
   const [isEditing, setisEditing] = useState(false);
+  const [editId, seteditId] = useState(null);
+  const [alert, setAlert] = useState({ show: false, msg: "", type: "" });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,22 +37,18 @@ const Home = () => {
       showAlert(true, "success", "value changed");
     } else {
       showAlert(true, "success", "item added to the list");
-      const newItem = { id: new Date().getDate().toString(), title: task };
-      setList([...list, newItem]);
+      const newItem = { id: new Date().getTime().toString(), title: task };
+      setList([ ...list, newItem ]);
       setTask("");
     }
   };
 
   const showAlert = (show = false, type = "", msg = "") => {
-    setAltert({ show, type, msg });
+    setAlert({ show, type, msg });
   };
 
-  useEffect(() => {
-    localStorage.setItem("list", JSON.stringify(list));
-  }, [list]);
-
   const clearList = () => {
-    showAlert(true, "danger", "empty set");
+    showAlert(true, "danger", "empty list");
     setList([]);
   };
 
@@ -70,11 +64,14 @@ const Home = () => {
     setTask(specificItem.title);
   };
 
+  useEffect(() => {
+    localStorage.setItem("list", JSON.stringify(list));
+  }, [list]);
   return (
     <section className="section-center">
       <form className="todo-form" onSubmit={handleSubmit}>
-        {alert.show && <Alert {...alert} removeItem={showAlert} list={list} />}
-        <h3>Todo App</h3>
+        {alert.show && <Alert {...alert} removeAlert={showAlert} list={list} />}
+        <h3>Tudo App</h3>
         <div className="form-control">
           <input
             type="text"
@@ -98,6 +95,6 @@ const Home = () => {
       )}
     </section>
   );
-};
+}
 
 export default Home;
