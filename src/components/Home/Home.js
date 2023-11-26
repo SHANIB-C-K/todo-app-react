@@ -1,3 +1,5 @@
+//This is th Home.js file
+
 import React, { useEffect, useState } from "react";
 import List from "../List/List";
 import Alert from "../Alert/Alert";
