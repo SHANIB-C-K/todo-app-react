@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import List from "../List/List";
+import Alert from "../Alert/Alert";
 
 const getLocalStorage = () => {
   let list = localStorage.getItem("list");
@@ -13,7 +14,7 @@ const getLocalStorage = () => {
 const Home = () => {
   const [task, setTask] = useState("");
   const [list, setList] = useState(getLocalStorage());
-  const [altert, setAltert] = useState(false);
+  const [alert, setAltert] = useState(false);
   const [editId, seteditId] = useState(null);
   const [isEditing, setisEditing] = useState(false);
 
@@ -50,26 +51,27 @@ const Home = () => {
     localStorage.setItem("list", JSON.stringify(list));
   }, [list]);
 
-  const clearItem = () => {
+  const clearList = () => {
     showAlert(true, "danger", "empty set");
     setList([]);
   };
 
   const removeItem = (id) => {
-    showAlert(true, "danger", "item removeds");
+    showAlert(true, "danger", "item removed");
     setList(list.filter((item) => item.id !== id));
   };
 
   const editItem = (id) => {
     const specificItem = list.find((item) => item.id === id);
-    setTask(specificItem.title);
-    seteditId(id);
     setisEditing(true);
+    seteditId(id);
+    setTask(specificItem.title);
   };
 
   return (
     <section className="section-center">
       <form className="todo-form" onSubmit={handleSubmit}>
+        {alert.show && <Alert {...alert} removeItem={showAlert} list={list} />}
         <h3>Todo App</h3>
         <div className="form-control">
           <input
@@ -84,10 +86,14 @@ const Home = () => {
           </button>
         </div>
       </form>
-      <div className="todo-container">
-        <List />
-        <button className="clear-btn">clear items</button>
-      </div>
+      {list.length > 0 && (
+        <div className="todo-container">
+          <List items={list} removeItem={removeItem} editItem={editItem} />
+          <button className="clear-btn" onClick={clearList}>
+            clear items
+          </button>
+        </div>
+      )}
     </section>
   );
 };
